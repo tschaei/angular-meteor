@@ -18,10 +18,12 @@ Package.registerBuildPlugin({
 Package.on_use(function (api) {
   api.versionsFrom('METEOR@0.9.0.1');
 
-  api.use('angularjs:angular@1.3.14', 'client');
   api.use('minimongo');  // for idStringify
   api.use('observe-sequence');
   api.use('dburles:mongo-collection-instances@0.3.1', 'client'); // For getCollectionByName
+
+  api.addFiles('lib/angular-server-polyfill.js', 'server');
+  api.addFiles('lib/angular.min.js');
 
   // Files to load in Client only.
   api.add_files([
@@ -40,8 +42,10 @@ Package.on_use(function (api) {
     'modules/angular-meteor-reactive-scope.js',
     'modules/angular-meteor-utils.js',
     // Finally load angular-meteor File
-    'angular-meteor.js'
+    'angular-meteor-client.js'
   ], 'client');
+
+  api.add_files('angular-meteor-server.js', 'server');
 });
 
 Package.onTest(function(api) {

@@ -1,0 +1,70 @@
+/**
+ * Created by netanel on 27/02/15.
+ */
+var serverInstances = new Meteor.Collection(null);
+
+angular.module('angular-meteor', [])
+  .provider('ServerAPI', function() {
+    var serverAPIs = [];
+    return {
+      register : function(apis) {
+        serverAPIs = serverAPIs.concat(apis);
+      },
+      $get : function() {
+        return {
+          getServerAPIS : function() {
+            return serverAPIs;
+          }
+        };
+      }
+    }
+  })
+  .run(['ServerAPI', '$injector', function(ServerAPI, $injector) {
+    angular.forEach(ServerAPI.getServerAPIS(), function(api) {
+      var instance = $injector.get(api);
+      var funcDefs = [];
+      for (var key in instance) {
+        if (angular.isFunction(instance[key])) {
+          funcDefs.push(key);
+        }
+      }
+      serverInstances.insert({ name : api, funcDefs : funcDefs });
+    });
+  }])
+  .run(['$injector', function($injector) {
+    Meteor.methods({
+      'angular:service' : function(name, prop, args) {
+        var service = $injector.get(name);
+        return service[prop].apply(service, args);
+      }
+    });
+  }])
+  .run(function() {
+    Meteor.publish('serverInstances', function() {
+      var self = this;
+      var handle = serverInstances.find({}).observeChanges({
+        addedBefore: function (id, fields) {
+          self.added('serverInstances', id, fields);
+        },
+        changed: function (id, fields) {
+          self.changed('serverInstances', id, fields);
+        },
+        removed: function (id) {
+          self.removed('serverInstances', id);
+        }
+      });
+
+      self.ready();
+
+      self.onStop(function() {
+        handle.stop();
+      })
+    });
+  });
+
+var origBootstrap = angular.bootstrap;
+angular.bootstrap = function(modules, config) {
+  return origBootstrap(document, modules, config);
+};
+
+
