@@ -88,7 +88,14 @@ Meteor.subscribe('serverInstances', function () {
   });
 
   // XXX make sure resumeBootstrap is defined before calling it
-  setTimeout(function () {
-    angular.resumeBootstrap(modules);
-  }, 0);
+  (function resume() {
+    setTimeout(function () {
+      if (!angular.resumeBootstrap) {
+        resume();
+      }
+      else {
+        angular.resumeBootstrap(modules);
+      }
+    }, 1);
+  })();
 });
