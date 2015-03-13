@@ -17,7 +17,7 @@
     <h1>Step 4 - Adding/removing objects and Angular event handling</h1>
   </div>
   <div class="video-tutorial col-md-4">
-    <iframe width="300" height="169" src="//www.youtube.com/embed/aLkjOL0Yyo4?list=PLhCf3AUOg4PgQoY_A6xWDQ70yaNtPYtZd" frameborder="0" allowfullscreen></iframe>
+    <iframe width="300" height="169" src="//www.youtube.com/embed/ijKsWglJI0k?list=PLhCf3AUOg4PgQoY_A6xWDQ70yaNtPYtZd" frameborder="0" allowfullscreen></iframe>
   </div>
 
   <do-nothing class="col-md-12">
@@ -215,11 +215,12 @@ So now you've seen how easy it is to manipulate the data using AngularJS's power
 
     </btf-markdown>
     </do-nothing>
-
+<div class="col-md-12">
     <ul class="btn-group tutorial-nav">
       <a href="/tutorial/step_03"><li class="btn btn-primary"><i class="glyphicon glyphicon-step-backward"></i> Previous</li></a>
       <a href="http://socially-step04.meteor.com/"><li class="btn btn-primary"><i class="glyphicon glyphicon-play"></i> Live Demo</li></a>
       <a href="https://github.com/Urigo/meteor-angular-socially/compare/step_03...step_04"><li class="btn btn-primary"><i class="glyphicon glyphicon-search"></i> Code Diff</li></a>
       <a href="/tutorial/step_05"><li class="btn btn-primary">Next <i class="glyphicon glyphicon-step-forward"></i></li></a>
     </ul>
+    </div>
   </div>

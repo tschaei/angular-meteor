@@ -168,43 +168,29 @@ AngularMeteorCollection.prototype.updateCursor = function (cursor) {
     self.observeHandle.stop();
   }
 
-  self.observeHandle = cursor.observeChanges({
-    addedBefore: function (id, fields, before) {
-      var newItem = self.$$collection.findOne(id);
-      if (before == null) {
-        self.push(newItem);
-      }
-      else {
-        var beforeIndex = _.indexOf(self, _.findWhere(self, { _id: before}));
-        self.splice(beforeIndex, 0, newItem);
-      }
+  self.observeHandle = cursor.observe({
+    addedAt: function (document, atIndex) {
+      self.splice(atIndex, 0, document);
       safeApply();
     },
-    changed: function (id, fields) {
-      angular.extend(_.findWhere(self, {_id: id}), fields);
+    changedAt: function (document, oldDocument, atIndex) {
+      self.splice(atIndex, 1, document);
       safeApply();
     },
-    movedBefore: function (id, before) {
-      var index = self.indexOf(_.findWhere(self, {_id: id}));
-      var removed = self.splice(index, 1)[0];
-      if (before == null) {
-        self.push(removed);
-      }
-      else {
-        var beforeIndex = _.indexOf(self, _.findWhere(self, { _id: before}));
-        self.splice(beforeIndex, 0, removed);
-      }
+    movedTo: function (document, fromIndex, toIndex) {
+      self.splice(fromIndex, 1);
+      self.splice(toIndex, 0, document);
       safeApply();
     },
-    removed: function (id) {
+    removedAt: function (oldDocument) {
       var removedObject;
-      if (id._str){
+      if (oldDocument._id._str){
         removedObject = _.find(self, function(obj) {
-          return obj._id._str == id._str;
+          return obj._id._str == oldDocument._id._str;
         });
       }
       else
-        removedObject = _.findWhere(self, {_id: id});
+        removedObject = _.findWhere(self, {_id: oldDocument._id});
 
       if (removedObject){
         self.splice(self.indexOf(removedObject), 1);
@@ -245,26 +231,38 @@ angularMeteorCollections.factory('$meteorCollection', ['$q', '$meteorSubscribe',
       }
 
       var ngCollection = new AngularMeteorCollection(reactiveFunc(), $q, $meteorSubscribe, $meteorUtils, $rootScope, $timeout);
+      var realOldItems;
 
       function setAutoBind() {
         if (auto) { // Deep watches the model and performs autobind.
           ngCollection.unregisterAutoBind = $rootScope.$watch(function () {
+            if (ngCollection.UPDATING_FROM_SERVER){
+              realOldItems = _.without(ngCollection, 'UPDATING_FROM_SERVER');
+              return 'UPDATING_FROM_SERVER';
+            }
             return _.without(ngCollection, 'UPDATING_FROM_SERVER');
           }, function (newItems, oldItems) {
-            if (!ngCollection.UPDATING_FROM_SERVER && newItems !== oldItems) {
+            if (newItems == 'UPDATING_FROM_SERVER')
+              return;
 
-              diffArray(angular.copy(oldItems), angular.copy(newItems), {
+            if (oldItems == 'UPDATING_FROM_SERVER')
+              oldItems = realOldItems;
+
+
+            if (newItems !== oldItems) {
+
+              diffArray(oldItems, newItems, {
                 addedAt: function (id, item, index) {
-                  var newValue = angular.copy(ngCollection[index]);
                   ngCollection.unregisterAutoBind();
-                  ngCollection.splice( index, 1 );
+                  var newValue = ngCollection.splice( index, 1 )[0];
                   setAutoBind();
                   ngCollection.save(newValue);
                 },
                 removedAt: function (id, item, index) {
                   ngCollection.remove(id);
                 },
-                changedAt: function (id, setDiff, unsetDiff, index) {
+                changedAt: function (id, setDiff, unsetDiff, index, oldItem) {
+
                   if (setDiff)
                     ngCollection.save(setDiff);
 

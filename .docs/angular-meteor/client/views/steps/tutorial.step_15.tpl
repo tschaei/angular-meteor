@@ -1,20 +1,26 @@
 
   <div>
-    <a href="https://github.com/Urigo/angular-meteor/edit/master/.docs/angular-meteor/client/views/steps/tutorial.step_15.html"
+    <a href="https://github.com/Urigo/angular-meteor/edit/master/.docs/angular-meteor/client/views/steps/tutorial.step_15.tpl"
        class="btn btn-default btn-lg improve-button">
       <i class="glyphicon glyphicon-edit">&nbsp;</i>Improve this doc
     </a>
     <ul class="btn-group tutorial-nav">
-      <a href="/tutorial-02/step_14"><li class="btn btn-primary"><i class="glyphicon glyphicon-step-backward"></i> Previous</li></a>
+      <a href="/tutorial/step_14"><li class="btn btn-primary"><i class="glyphicon glyphicon-step-backward"></i> Previous</li></a>
       <a href="http://socially-step15.meteor.com/"><li class="btn btn-primary"><i class="glyphicon glyphicon-play"></i> Live Demo</li></a>
       <a href="https://github.com/Urigo/meteor-angular-socially/compare/step_14...step_15"><li class="btn btn-primary"><i class="glyphicon glyphicon-search"></i> Code Diff</li></a>
-      <a href="/tutorial-02/step_16"><li class="btn btn-primary">Next <i class="glyphicon glyphicon-step-forward"></i></li></a>
+      <a href="/tutorial/step_16"><li class="btn btn-primary">Next <i class="glyphicon glyphicon-step-forward"></i></li></a>
     </ul>
 
-    <do-nothing>
+    <div class="col-md-8">
+      <h1>Step 15 - Conditional template directives with AngularJS</h1>
+    </div>
+    <div class="video-tutorial col-md-4">
+      <iframe width="300" height="169" src="//www.youtube.com/embed/KSlVThsNCss?list=PLhCf3AUOg4PgQoY_A6xWDQ70yaNtPYtZd" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <do-nothing class="col-md-12">
   <btf-markdown>
 
-# Step 15 - Conditional template directives with AngularJS
 
 AngularJS has great and very simple directives that help us show and hide DOM elements conditionally.
 You can bind them to an expression, variables or functions.
@@ -43,14 +49,14 @@ Then right after the form, add this HTML:
 </btf-markdown>
 
 <pre><code>
-&lt;<span class="hljs-operator">div</span> ng-hide=<span class="hljs-string">"$root.currentUser"</span>&gt;
+&lt;<span class="hljs-operator">div</span> ng-hide=<span class="hljs-string">"$root.currentUser || $root.loggingIn"</span>&gt;
   Log <span class="hljs-operator">in</span> <span class="hljs-built_in">to</span> <span class="hljs-built_in">create</span> <span class="hljs-operator">a</span> party!
 &lt;/<span class="hljs-operator">div</span>&gt;
 </code></pre>
 
       <btf-markdown>
 
-That is exactly the opposite - if '$root.currentUser' exists, hide that div. Note that this statement is equivalent to ng-show="!$root.currentUser".
+That is exactly the opposite - if '$root.currentUser' exists or we're in the processing of logging in, hide that div. Note that this statement is equivalent to ng-show="!$root.currentUser && !$root.loggingIn".
 
 Now add the same to the RSVP buttons:
 
@@ -187,13 +193,14 @@ In the next chapter we will add some CSS and styling to our app.
 
       </btf-markdown>
     </do-nothing>
-
+<div class="col-md-12">
     <ul class="btn-group tutorial-nav">
-      <a href="/tutorial-02/step_14"><li class="btn btn-primary"><i class="glyphicon glyphicon-step-backward"></i> Previous</li></a>
+      <a href="/tutorial/step_14"><li class="btn btn-primary"><i class="glyphicon glyphicon-step-backward"></i> Previous</li></a>
       <a href="http://socially-step15.meteor.com/"><li class="btn btn-primary"><i class="glyphicon glyphicon-play"></i> Live Demo</li></a>
       <a href="https://github.com/Urigo/meteor-angular-socially/compare/step_14...step_15"><li class="btn btn-primary"><i class="glyphicon glyphicon-search"></i> Code Diff</li></a>
-      <a href="/tutorial-02/step_16"><li class="btn btn-primary">Next <i class="glyphicon glyphicon-step-forward"></i></li></a>
+      <a href="/tutorial/step_16"><li class="btn btn-primary">Next <i class="glyphicon glyphicon-step-forward"></i></li></a>
     </ul>
+    </div>
   </div>
 
 

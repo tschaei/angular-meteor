@@ -14,10 +14,10 @@
     </div>
 
       <div class="col-md-8">
-        <h1>Step 0</h1>
+        <h1>Step 0 - Bootstrapping</h1>
       </div>
       <div class="video-tutorial col-md-4">
-        <iframe width="300" height="169" src="//www.youtube.com/embed/LVuCeKswPPE?list=PLhCf3AUOg4PgQoY_A6xWDQ70yaNtPYtZd" frameborder="0" allowfullscreen></iframe>
+        <iframe width="300" height="169" src="//www.youtube.com/embed/s2RWlIrkCaE?list=PLhCf3AUOg4PgQoY_A6xWDQ70yaNtPYtZd" frameborder="0" allowfullscreen></iframe>
       </div>
     <do-nothing class="col-md-12">
       <btf-markdown>
@@ -66,8 +66,7 @@ __`index.html`:__
 
           </btf-markdown>
 
-<pre><code>
-<span class="hljs-tag">&lt;<span class="hljs-title">body</span>&gt;</span>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-title">body</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>Nothing here<span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-title">body</span>&gt;</span>
 </code></pre>
@@ -117,8 +116,7 @@ __`index.ng.html`:__
 
           </btf-markdown>
 
-<pre><code>
-<span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>Nothing here<span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>Nothing here<span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>
 </code></pre>
 
       <btf-markdown>
@@ -129,8 +127,7 @@ __`index.html`:__
 
       </btf-markdown>
 
-<pre><code>
-<span class="hljs-tag">&lt;<span class="hljs-title">body</span>&gt;</span>
+<pre><code><span class="hljs-tag">&lt;<span class="hljs-title">body</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">ng-include</span>=<span class="hljs-value">"'index.ng.html'"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-title">body</span>&gt;</span>
 </code></pre>
@@ -169,8 +166,7 @@ And name our application in the ng-app directive in index.html:
 
       </btf-markdown>
 
-<pre><code>
-  &lt;<span class="hljs-operator">div</span> ng-app=<span class="hljs-string">"socially"</span> ng-<span class="hljs-built_in">include</span>=<span class="hljs-string">"'index.ng.html'"</span>&gt;&lt;/<span class="hljs-operator">div</span>&gt;
+<pre><code>&lt;<span class="hljs-operator">div</span> ng-app=<span class="hljs-string">"socially"</span> ng-<span class="hljs-built_in">include</span>=<span class="hljs-string">"'index.ng.html'"</span>&gt;&lt;/<span class="hljs-operator">div</span>&gt;
 </code></pre>
       <btf-markdown>
 
@@ -185,8 +181,7 @@ and now inside our index.ng.html let's use Angular:
 
 </btf-markdown>
 
-<pre><code>
-<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>Nothing here </span><span class="hljs-expression">{{ '<span class="hljs-variable">yet</span>' + '!' }}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span></span>
+<pre><code><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>Nothing here </span><span class="hljs-expression">{{ '<span class="hljs-variable">yet</span>' + '!' }}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span></span>
 </code></pre>
 
 <btf-markdown>
@@ -221,8 +216,7 @@ Try adding a new expression to the index.ng.html that will do some math:
 
 </btf-markdown>
 
-<pre><code>
-<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>1 + 2 = </span><span class="hljs-variable">{{ 1 + 2 }}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span></span>
+<pre><code><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>1 + 2 = </span><span class="hljs-variable">{{ 1 + 2 }}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span></span>
 </code></pre>
 
 <btf-markdown>
@@ -233,7 +227,7 @@ Now let's go to [step 1](step_01) and add some content to the web app.
 
         </btf-markdown>
     </do-nothing>
-
+  <div class="col-md-12">
     <ul class="btn-group tutorial-nav">
       <a href="/tutorial"><li class="btn btn-primary"><i class="glyphicon glyphicon-step-backward"></i> Previous</li></a>
       <a href="http://socially-step00.meteor.com/"><li class="btn btn-primary"><i class="glyphicon glyphicon-play"></i> Live Demo</li></a>
@@ -241,4 +235,5 @@ Now let's go to [step 1](step_01) and add some content to the web app.
       <a href="/tutorial/step_01"><li class="btn btn-primary">Next <i class="glyphicon glyphicon-step-forward"></i></li></a>
     </ul>
   </div>
+</div>
 

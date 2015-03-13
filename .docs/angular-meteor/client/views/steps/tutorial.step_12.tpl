@@ -5,16 +5,22 @@
       <i class="glyphicon glyphicon-edit">&nbsp;</i>Improve this doc
     </a>
     <ul class="btn-group tutorial-nav">
-      <a href="/tutorial-02/step_11"><li class="btn btn-primary"><i class="glyphicon glyphicon-step-backward"></i> Previous</li></a>
+      <a href="/tutorial/step_11"><li class="btn btn-primary"><i class="glyphicon glyphicon-step-backward"></i> Previous</li></a>
       <a href="http://socially-step12.meteor.com/"><li class="btn btn-primary"><i class="glyphicon glyphicon-play"></i> Live Demo</li></a>
       <a href="https://github.com/Urigo/meteor-angular-socially/compare/step_11...step_12"><li class="btn btn-primary"><i class="glyphicon glyphicon-search"></i> Code Diff</li></a>
-      <a href="/tutorial-02/step_13"><li class="btn btn-primary">Next <i class="glyphicon glyphicon-step-forward"></i></li></a>
+      <a href="/tutorial/step_13"><li class="btn btn-primary">Next <i class="glyphicon glyphicon-step-forward"></i></li></a>
     </ul>
 
-    <do-nothing>
+    <div class="col-md-8">
+      <h1>Step 12 - Search, sort, pagination and reactive vars</h1>
+    </div>
+    <div class="video-tutorial col-md-4">
+      <iframe width="300" height="169" src="//www.youtube.com/embed/8XQI2XpyH18?list=PLhCf3AUOg4PgQoY_A6xWDQ70yaNtPYtZd" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <do-nothing class="col-md-12">
   <btf-markdown>
 
-# Step 12 - Search, sort, pagination and reactive vars
 
 Now we are dealing with a few parties.
 But we need to support also a large number of parties.
@@ -408,6 +414,48 @@ And all we have left to do is call the subscribe method with our reactive scope 
 
 Wow that is all that is needed to have a fully reactive search with pagination! Quite amazing right?
 
+
+# Stopping a subscription
+
+There is only one problem in our app right now - if you will go into the party details page and then go back, the pagination and search will stop working.
+
+The reason is that we are calling a different subscription on the same collection inside the partyDetails controller..
+
+So to fix that, we will have to close that subscription after leaving the controller.
+
+First thing, we need to catch the event of the controller closing by adding the $scope.$on('$destroy'):
+
+    $scope.$on('$destroy', function() {
+
+    });
+
+Now we need to get the subscription handle with we will use to stop the subscription.
+
+We will need to call the $meteor.subscribe it self instead of the shortcut we are using right now.
+
+First remove to subscription from $meteor.object:
+
+    $scope.party = $meteor.object(Parties, $stateParams.partyId);
+
+And now add the subscribe function and save the handle somewhere:
+
+    var subscriptionHandle;
+
+    $meteor.subscribe('parties').then(function(handle) {
+      subscriptionHandle = handle;
+    });
+
+And last thing, stop the subscription when the scope is destroyed:
+
+    $scope.$on('$destroy', function() {
+      subscriptionHandle.stop();
+    });
+
+That's it.
+
+Maybe in the future we will add an automatic way to open and close subscriptions in scope's load and destroy events.
+
+
 # Summary
 
 Now we have full pagination with search and sorting for client and server side with the help of Meteor's options and Angular's directives.
@@ -415,13 +463,14 @@ Now we have full pagination with search and sorting for client and server side w
 
   </btf-markdown>
     </do-nothing>
-
+<div class="col-md-12">
     <ul class="btn-group tutorial-nav">
-      <a href="/tutorial-02/step_11"><li class="btn btn-primary"><i class="glyphicon glyphicon-step-backward"></i> Previous</li></a>
+      <a href="/tutorial/step_11"><li class="btn btn-primary"><i class="glyphicon glyphicon-step-backward"></i> Previous</li></a>
       <a href="http://socially-step12.meteor.com/"><li class="btn btn-primary"><i class="glyphicon glyphicon-play"></i> Live Demo</li></a>
       <a href="https://github.com/Urigo/meteor-angular-socially/compare/step_11...step_12"><li class="btn btn-primary"><i class="glyphicon glyphicon-search"></i> Code Diff</li></a>
-      <a href="/tutorial-02/step_13"><li class="btn btn-primary">Next <i class="glyphicon glyphicon-step-forward"></i></li></a>
+      <a href="/tutorial/step_13"><li class="btn btn-primary">Next <i class="glyphicon glyphicon-step-forward"></i></li></a>
     </ul>
+    </div>
   </div>
 
 

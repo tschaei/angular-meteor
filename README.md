@@ -3,9 +3,7 @@
 > The power of Meteor and the simplicity and eco-system of AngularJS
 
 ## Community - Thank you so much for making the [ng-conf 2015 talk](https://github.com/ng-conf/submissions-2015/pull/172) happen!
-Follow the talk here - <a href="http://www.ng-conf.org/schedule">
-<img src="http://lh3.googleusercontent.com/-LHJwKtNqcU0/UipDx8KHUnI/AAAAAAAAAH4/qeow7Kltot8/s620-no/ng-conf.png" width="50" height="50" />
-</a>
+[![ng-conf](http://img.youtube.com/vi/uFmf-DeCdEE/0.jpg)](https://www.youtube.com/embed/videoseries?list=PLhCf3AUOg4PgQoY_A6xWDQ70yaNtPYtZd)
 
 ## Quick start
 1. Install [Meteor](http://docs.meteor.com/#quickstart) `$ curl https://install.meteor.com | /bin/sh`
@@ -25,6 +23,7 @@ We would love contributions in:
 1. Code
 2. [Tutorial](http://angularjs.meteor.com/tutorial) - our goal with the tutorial is to add as many common tasks as possible. If you want to create and add your own chapter we would be happy to help you writing and adding it.
 3. [Roadmap](https://trello.com/b/Wj9U0ulk/angular-meteor) - you can add a card about want you want to see in the library or in the tutorial.
+4. I ([Urigo](https://github.com/urigo)) live around the world with one small bag, so another way of contributing can be by offering me a place to sleep somewhere interesting around the world that I have to see :) 
 
 ## Contributor Developer Setup
 
@@ -188,7 +187,7 @@ $rootScope.currentUser; // Currently logged in user and its data
 $rootScope.loggingIn; // true if a Meteor login method is currently in progress
 ```
 
-[More in step 8 of the tutorial](http://angularjs.meteor.com/tutorial-02/step_08)
+[More in step 8 of the tutorial](http://angularjs.meteor.com/tutorial/step_08)
 
 ### Meteor methods with promises
 
