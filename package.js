@@ -23,7 +23,7 @@ Package.on_use(function (api) {
   api.use('dburles:mongo-collection-instances@0.3.3', 'client'); // For getCollectionByName
 
   api.addFiles('lib/angular-server-polyfill.js', 'server');
-  api.use('angularjs:angular@1.3.13');
+  api.addFiles('lib/angular.min.js');
 
   // Files to load in Client only.
   api.add_files([
