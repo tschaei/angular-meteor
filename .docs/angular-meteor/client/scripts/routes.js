@@ -45,6 +45,10 @@ angular.module("meteor-angular-docs").config(['$urlRouterProvider', '$stateProvi
           url: '/AngularMeteorCollection',
           template: UiRouter.template('api.AngularMeteorCollection.html')
         })
+        .state('api.AngularMeteorObject', {
+          url: '/AngularMeteorObject',
+          template: UiRouter.template('api.AngularMeteorObject.html')
+        })
         .state('api.subscribe', {
           url: '/subscribe',
           template: UiRouter.template('api.subscribe.html')
@@ -57,9 +61,9 @@ angular.module("meteor-angular-docs").config(['$urlRouterProvider', '$stateProvi
           url: '/methods',
           template: UiRouter.template('api.methods.html')
         })
-        .state('api.user', {
-          url: '/user',
-          template: UiRouter.template('api.user.html')
+        .state('api.auth', {
+          url: '/auth',
+          template: UiRouter.template('api.auth.html')
         })
         .state('api.getReactively', {
           url: '/getReactively',
@@ -69,9 +73,17 @@ angular.module("meteor-angular-docs").config(['$urlRouterProvider', '$stateProvi
           url: '/meteor-include',
           template: UiRouter.template('api.meteor-include.html')
         })
+        .state('api.collectionfs', {
+          url: '/collectionfs',
+          template: UiRouter.template('api.collectionfs.html')
+        })
         .state('api.utils', {
           url: '/utils',
           template: UiRouter.template('api.utils.html')
+        })
+        .state('api.camera', {
+          url: '/camera',
+          template: UiRouter.template('api.camera.html')
         })
         .state('api.collection-pagination', {
           url: '/collection-pagination',
@@ -119,52 +131,56 @@ angular.module("meteor-angular-docs").config(['$urlRouterProvider', '$stateProvi
           url: '/step_07',
           template: UiRouter.template('tutorial.step_07.html')
         })
-      .state('tutorial02', {
-        abstract: true,
-        url: '/tutorial-02',
-        template: UiRouter.template('tutorial-02.html'),
-        controller: 'TutorialCtrl'
-      })
-        .state('tutorial02.intro', {
-          url: '',
-          template: UiRouter.template('tutorial-02.intro.html')
-        })
-        .state('tutorial02.step08', {
+        .state('tutorial.step08', {
           url: '/step_08',
           template: UiRouter.template('tutorial.step_08.html')
         })
-        .state('tutorial02.step09', {
+        .state('tutorial.step09', {
           url: '/step_09',
           templateUrl: 'client/views/steps/tutorial.step_09.tpl'
         })
-        .state('tutorial02.step10', {
+        .state('tutorial.step10', {
           url: '/step_10',
           templateUrl: 'client/views/steps/tutorial.step_10.tpl'
         })
-        .state('tutorial02.step11', {
+        .state('tutorial.step11', {
           url: '/step_11',
           templateUrl: 'client/views/steps/tutorial.step_11.tpl'
         })
-        .state('tutorial02.step12', {
+        .state('tutorial.step12', {
           url: '/step_12',
           templateUrl: 'client/views/steps/tutorial.step_12.tpl'
         })
-        .state('tutorial02.step13', {
+        .state('tutorial.step13', {
           url: '/step_13',
         templateUrl: 'client/views/steps/tutorial.step_13.tpl'
         })
-        .state('tutorial02.step14', {
+        .state('tutorial.step14', {
           url: '/step_14',
         templateUrl: 'client/views/steps/tutorial.step_14.tpl'
         })
-        .state('tutorial02.step15', {
+        .state('tutorial.step15', {
           url: '/step_15',
         templateUrl: 'client/views/steps/tutorial.step_15.tpl'
         })
-        .state('tutorial02.step16', {
+        .state('tutorial.step16', {
           url: '/step_16',
           template: UiRouter.template('tutorial.step_16.html')
+        })
+        .state('tutorial.step17', {
+          url: '/step_17',
+          template: UiRouter.template('tutorial.step_17.html')
+        })
+        .state('tutorial.next_steps', {
+          url: '/next_steps',
+          template: UiRouter.template('tutorial.next_steps.html')
         });
 
     $locationProvider.html5Mode(true);
-  }]);
+  }])
+
+ .run(['$rootScope', function($rootScope) {
+   $rootScope.$on('$stateChangeSuccess', function() {
+     window.scrollTo(0, 0);
+   })
+ }]);

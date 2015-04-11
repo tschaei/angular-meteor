@@ -4,7 +4,7 @@ var angularMeteorCollections = angular.module('angular-meteor.meteor-collection'
   ['angular-meteor.subscribe', 'angular-meteor.utils', 'diffArray']);
 
 
-var AngularMeteorCollection = function (cursor, $q, $meteorSubscribe, $meteorUtils, $rootScope, $timeout) {
+var AngularMeteorCollection = function (cursor, collection, $q, $meteorSubscribe, $meteorUtils, $rootScope, $timeout) {
 
   var self = [];
 
@@ -14,7 +14,7 @@ var AngularMeteorCollection = function (cursor, $q, $meteorSubscribe, $meteorUti
   self.__proto__.$rootScope = $rootScope;
   self.__proto__.$timeout = $timeout;
 
-  self.$$collection = $meteorUtils.getCollectionByName(cursor.collection.name);
+  self.$$collection = angular.isDefined(collection) ? collection : $meteorUtils.getCollectionByName(cursor.collection.name);
 
   return self;
 };
@@ -40,8 +40,6 @@ AngularMeteorCollection.prototype.save = function save(docs, useUnsetModifier) {
    */
   function upsertObject(item, $q) {
     var deferred = $q.defer();
-
-    item = angular.copy(item);
 
     if (item._id) { // Performs an update if the _id property is set.
       var item_id = item._id; // Store the _id in temporary variable
@@ -168,43 +166,29 @@ AngularMeteorCollection.prototype.updateCursor = function (cursor) {
     self.observeHandle.stop();
   }
 
-  self.observeHandle = cursor.observeChanges({
-    addedBefore: function (id, fields, before) {
-      var newItem = self.$$collection.findOne(id);
-      if (before == null) {
-        self.push(newItem);
-      }
-      else {
-        var beforeIndex = _.indexOf(self, _.findWhere(self, { _id: before}));
-        self.splice(beforeIndex, 0, newItem);
-      }
+  self.observeHandle = cursor.observe({
+    addedAt: function (document, atIndex) {
+      self.splice(atIndex, 0, document);
       safeApply();
     },
-    changed: function (id, fields) {
-      angular.extend(_.findWhere(self, {_id: id}), fields);
+    changedAt: function (document, oldDocument, atIndex) {
+      self.splice(atIndex, 1, document);
       safeApply();
     },
-    movedBefore: function (id, before) {
-      var index = self.indexOf(_.findWhere(self, {_id: id}));
-      var removed = self.splice(index, 1)[0];
-      if (before == null) {
-        self.push(removed);
-      }
-      else {
-        var beforeIndex = _.indexOf(self, _.findWhere(self, { _id: before}));
-        self.splice(beforeIndex, 0, removed);
-      }
+    movedTo: function (document, fromIndex, toIndex) {
+      self.splice(fromIndex, 1);
+      self.splice(toIndex, 0, document);
       safeApply();
     },
-    removed: function (id) {
+    removedAt: function (oldDocument) {
       var removedObject;
-      if (id._str){
+      if (oldDocument._id._str){
         removedObject = _.find(self, function(obj) {
-          return obj._id._str == id._str;
+          return obj._id._str == oldDocument._id._str;
         });
       }
       else
-        removedObject = _.findWhere(self, {_id: id});
+        removedObject = _.findWhere(self, {_id: oldDocument._id});
 
       if (removedObject){
         self.splice(self.indexOf(removedObject), 1);
@@ -218,7 +202,9 @@ AngularMeteorCollection.prototype.stop = function () {
   if (this.unregisterAutoBind)
     this.unregisterAutoBind();
 
-  this.observeHandle.stop();
+  if (this.observeHandle)
+    this.observeHandle.stop();
+
   while (this.length > 0) {
     this.pop();
   }
@@ -227,44 +213,58 @@ AngularMeteorCollection.prototype.stop = function () {
 
 angularMeteorCollections.factory('$meteorCollection', ['$q', '$meteorSubscribe', '$meteorUtils', '$rootScope', '$timeout', 'diffArray',
   function ($q, $meteorSubscribe, $meteorUtils, $rootScope, $timeout, diffArray) {
-    return function (reactiveFunc, auto) {
+    return function (reactiveFunc, auto, collection) {
       // Validate parameters
       if (!reactiveFunc) {
         throw new TypeError("The first argument of $meteorCollection is undefined.");
       }
-      if (!(typeof reactiveFunc == "function" || reactiveFunc instanceof Mongo.Collection)) {
-        throw new TypeError("The first argument of $meteorCollection must be a function or a Mongo.Collection.");
+      if (!(typeof reactiveFunc == "function" || angular.isFunction(reactiveFunc.find))) {
+        throw new TypeError("The first argument of $meteorCollection must be a function or a have a find function property.");
       }
       auto = auto !== false;
 
-      if (reactiveFunc instanceof Mongo.Collection) {
-        var collection = reactiveFunc;
+      if (!(typeof reactiveFunc == "function")) {
+        var cursorFunc = reactiveFunc.find;
+        collection = angular.isDefined(collection) ? collection : reactiveFunc;
+        var originalCollection = reactiveFunc;
         reactiveFunc = function() {
-          return collection.find({});
+          return cursorFunc.apply(originalCollection, [{}]);
         }
       }
 
-      var ngCollection = new AngularMeteorCollection(reactiveFunc(), $q, $meteorSubscribe, $meteorUtils, $rootScope, $timeout);
+      var ngCollection = new AngularMeteorCollection(reactiveFunc(), collection, $q, $meteorSubscribe, $meteorUtils, $rootScope, $timeout);
+      var realOldItems;
 
       function setAutoBind() {
         if (auto) { // Deep watches the model and performs autobind.
           ngCollection.unregisterAutoBind = $rootScope.$watch(function () {
+            if (ngCollection.UPDATING_FROM_SERVER){
+              realOldItems = _.without(ngCollection, 'UPDATING_FROM_SERVER');
+              return 'UPDATING_FROM_SERVER';
+            }
             return _.without(ngCollection, 'UPDATING_FROM_SERVER');
           }, function (newItems, oldItems) {
-            if (!ngCollection.UPDATING_FROM_SERVER && newItems !== oldItems) {
+            if (newItems == 'UPDATING_FROM_SERVER')
+              return;
 
-              diffArray(angular.copy(oldItems), angular.copy(newItems), {
+            if (oldItems == 'UPDATING_FROM_SERVER')
+              oldItems = realOldItems;
+
+
+            if (newItems !== oldItems) {
+
+              diffArray(oldItems, newItems, {
                 addedAt: function (id, item, index) {
-                  var newValue = angular.copy(ngCollection[index]);
                   ngCollection.unregisterAutoBind();
-                  ngCollection.splice( index, 1 );
+                  var newValue = ngCollection.splice( index, 1 )[0];
                   setAutoBind();
                   ngCollection.save(newValue);
                 },
                 removedAt: function (id, item, index) {
                   ngCollection.remove(id);
                 },
-                changedAt: function (id, setDiff, unsetDiff, index) {
+                changedAt: function (id, setDiff, unsetDiff, index, oldItem) {
+
                   if (setDiff)
                     ngCollection.save(setDiff);
 
