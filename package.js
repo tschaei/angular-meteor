@@ -34,7 +34,7 @@ Package.on_use(function (api) {
   api.use('dburles:mongo-collection-instances@0.3.3', 'client'); // For getCollectionByName
 
   api.addFiles('lib/angular-server-polyfill.js', 'server');
-  api.addFiles('lib/angular.min.js');
+  api.addFiles('lib/angular.js');
 
   // Files to load in Client only.
   api.add_files([
@@ -58,6 +58,8 @@ Package.on_use(function (api) {
   ], 'client');
 
   api.add_files('angular-meteor-server.js', 'server');
+
+  api.add_files('angular-meteor-common.js');
 });
 
 Package.onTest(function(api) {
