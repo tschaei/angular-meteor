@@ -21,7 +21,14 @@ angular.module('angular-meteor')
     Meteor.methods({
       'angular:service' : function(name, prop, args) {
         var service = $injector.get(name);
-        return service[prop].apply(service, args);
+
+        // XXX - think if better to apply with meteor's this or the service
+        if (Meteor.isClient && angular.isDefined(service.$$originalInstance)) {
+          return service.$$originalInstance[prop].apply(this, args);
+        }
+        else {
+          return service[prop].apply(this, args);
+        }
       }
     });
   }]);
