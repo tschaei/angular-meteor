@@ -71,7 +71,7 @@ Package.onTest(function(api) {
   api.use(['test-helpers'], ['client']);
 
   api.addFiles([
-    'angular-meteor.js',
+    'angular-meteor-client.js',
     'lib/angular-hash-key-copier.js',
     'lib/diff-array.js',
     'modules/angular-meteor-collections.js',
