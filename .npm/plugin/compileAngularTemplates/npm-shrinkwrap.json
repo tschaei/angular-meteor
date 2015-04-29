@@ -13,31 +13,31 @@
               "version": "1.1.0"
             },
             "dot-case": {
-              "version": "1.1.0"
-            },
-            "is-lower-case": {
-              "version": "1.1.0"
-            },
-            "is-upper-case": {
-              "version": "1.1.0"
-            },
-            "lower-case": {
               "version": "1.1.1"
             },
+            "is-lower-case": {
+              "version": "1.1.1"
+            },
+            "is-upper-case": {
+              "version": "1.1.1"
+            },
+            "lower-case": {
+              "version": "1.1.2"
+            },
             "param-case": {
-              "version": "1.1.0"
+              "version": "1.1.1"
             },
             "pascal-case": {
               "version": "1.1.0"
             },
             "path-case": {
-              "version": "1.1.0"
-            },
-            "sentence-case": {
               "version": "1.1.1"
             },
+            "sentence-case": {
+              "version": "1.1.2"
+            },
             "snake-case": {
-              "version": "1.1.0"
+              "version": "1.1.1"
             },
             "swap-case": {
               "version": "1.1.0"
@@ -46,10 +46,10 @@
               "version": "1.1.0"
             },
             "upper-case": {
-              "version": "1.1.1"
+              "version": "1.1.2"
             },
             "upper-case-first": {
-              "version": "1.1.0"
+              "version": "1.1.1"
             }
           }
         },
@@ -62,7 +62,7 @@
           }
         },
         "cli": {
-          "version": "0.6.5",
+          "version": "0.6.6",
           "dependencies": {
             "glob": {
               "version": "3.2.11",
@@ -74,7 +74,7 @@
                   "version": "0.3.0",
                   "dependencies": {
                     "lru-cache": {
-                      "version": "2.5.0"
+                      "version": "2.6.2"
                     },
                     "sigmund": {
                       "version": "1.0.0"
@@ -89,7 +89,7 @@
           }
         },
         "uglify-js": {
-          "version": "2.4.16",
+          "version": "2.4.20",
           "dependencies": {
             "async": {
               "version": "0.2.10"
@@ -102,9 +102,18 @@
                 }
               }
             },
-            "optimist": {
-              "version": "0.3.7",
+            "yargs": {
+              "version": "3.5.4",
               "dependencies": {
+                "camelcase": {
+                  "version": "1.0.2"
+                },
+                "decamelize": {
+                  "version": "1.0.0"
+                },
+                "window-size": {
+                  "version": "0.1.0"
+                },
                 "wordwrap": {
                   "version": "0.0.2"
                 }
