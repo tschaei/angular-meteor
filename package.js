@@ -57,7 +57,11 @@ Package.on_use(function (api) {
     'angular-meteor-client.js'
   ], 'client');
 
-  api.add_files('angular-meteor-server.js', 'server');
+  api.add_files(['modules/angular-meteor-meteorCollection.js',
+                  'modules/angular-meteor-subscribe.js',
+                  'modules/angular-meteor-utils.js',
+                  'lib/diff-array.js',
+                  'angular-meteor-server.js'], 'server');
 
   api.add_files('angular-meteor-common.js');
 });

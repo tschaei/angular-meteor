@@ -132,7 +132,7 @@ Meteor.subscribe('serverInstances', function () {
         }]);
       }
       else {
-        $provide.factory(instance.name, ['$q', function ($q) {
+        $provide.factory(instance.name, ['$q', '$rootScope', function ($q, $rootScope) {
           var serviceInstance = {};
           angular.forEach(instance.funcDefs, function (funcDef) {
             serviceInstance[funcDef] = function () {
@@ -155,6 +155,17 @@ Meteor.subscribe('serverInstances', function () {
 
               return deferred.promise;
             };
+          });
+
+          angular.extend(serviceInstance, instance.properties);
+
+          serverInstances.find({}).observe({
+            changed : function (newDpc) {
+              angular.extend(serviceInstance, newDpc.properties);
+              if (!$rootScope.$$phase) {
+                $rootScope.$apply();
+              }
+            }
           });
 
           return serviceInstance;

@@ -277,18 +277,23 @@ angularMeteorCollections.factory('$meteorCollection', ['AngularMeteorCollection'
         }
       }
 
-      /**
-       * Fetches the latest data from Meteor and update the data variable.
-       */
-      Tracker.autorun(function () {
-        // When the reactive func gets recomputated we need to stop any previous
-        // observeChanges
-        Tracker.onInvalidate(function () {
-          ngCollection.stop();
+      if (Meteor.isClient) {
+        /**
+         * Fetches the latest data from Meteor and update the data variable.
+         */
+        Tracker.autorun(function () {
+          // When the reactive func gets recomputated we need to stop any previous
+          // observeChanges
+          Tracker.onInvalidate(function () {
+            ngCollection.stop();
+          });
+          ngCollection.updateCursor(reactiveFunc());
+          setAutoBind();
         });
+      }
+      else {
         ngCollection.updateCursor(reactiveFunc());
-        setAutoBind();
-      });
+      }
 
       return ngCollection;
     }

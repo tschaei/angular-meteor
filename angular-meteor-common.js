@@ -24,10 +24,10 @@ angular.module('angular-meteor')
 
         // XXX - think if better to apply with meteor's this or the service
         if (Meteor.isClient && angular.isDefined(service.$$originalInstance)) {
-          return service.$$originalInstance[prop].apply(this, args);
+          return service.$$originalInstance[prop].apply(service, args);
         }
         else {
-          return service[prop].apply(this, args);
+          return service[prop].apply(service, args);
         }
       }
     });
