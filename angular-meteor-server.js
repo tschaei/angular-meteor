@@ -18,7 +18,6 @@ angular.module('angular-meteor', ['angular-meteor.meteor-collection'])
       $rootScope.$watch(function() {
         return instance;
       }, function() {
-        console.log('updating', instanceId, instance);
         serverInstances.update({ _id : instanceId }, { $set : { properties : instance } });
       }, true);
 
@@ -32,7 +31,6 @@ angular.module('angular-meteor', ['angular-meteor.meteor-collection'])
           self.added('serverInstances', id, fields);
         },
         changed: function (id, fields) {
-          console.log('changed', id, fields);
           self.changed('serverInstances', id, fields);
         },
         removed: function (id) {
@@ -47,25 +45,14 @@ angular.module('angular-meteor', ['angular-meteor.meteor-collection'])
       })
     });
   })
-  .run(function($rootScope, ServerAPI) {
-    //var origRun = Meteor._SynchronousQueue.prototype._run;
-    //
-    //console.log('replacing run');
-    //Meteor._SynchronousQueue.prototype._run = function() {
-    //  console.log('running from queue');
-    //  var result = origRun.apply(this, arguments);
-    //  $rootScope.$apply();
-    //  return result;
-    //};
+  .run(function($rootScope) {
     var Fibers = Npm.require('fibers');
     var origRun = Fibers.prototype.run;
 
     Fibers.prototype.run = function() {
         var result = origRun.apply(this, arguments);
         if (!$rootScope.$$phase) {
-          var startTime = new Date();
           $rootScope.$apply();
-          console.log ('digest time:', new Date() - startTime);
         }
         return result;
     };
