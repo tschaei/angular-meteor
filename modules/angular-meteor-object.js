@@ -1,6 +1,6 @@
-var angularMeteorObject = angular.module('angular-meteor.object', ['angular-meteor.utils', 'angular-meteor.subscribe']);
+var angularMeteorObject = angular.module('angular-meteor.object', ['angular-meteor.meteor-collection', 'angular-meteor.utils', 'angular-meteor.subscribe']);
 
-angularMeteorObject.factory('AngularMeteorObject', ['$q', '$meteorSubscribe', function($q, $meteorSubscribe) {
+angularMeteorObject.factory('AngularMeteorObject', ['$q', '$meteorSubscribe', '$meteorCollection', function($q, $meteorSubscribe, $meteorCollection) {
   var AngularMeteorObject = {};
 
   AngularMeteorObject.getRawObject = function () {
@@ -15,6 +15,16 @@ angularMeteorObject.factory('AngularMeteorObject', ['$q', '$meteorSubscribe', fu
   };
 
   AngularMeteorObject.save = function save(docs) {
+
+    console.log('this',this);
+
+    if (this){
+      if (this._id){
+        this.$$originalCollection.save(this._id);
+      }
+    }
+
+    /*
     var self = this,
       collection = self.$$collection;
 
@@ -37,6 +47,7 @@ angularMeteorObject.factory('AngularMeteorObject', ['$q', '$meteorSubscribe', fu
       }
 
     return deferred.promise;
+    */
   };
 
   AngularMeteorObject.reset = function reset() {
@@ -86,19 +97,39 @@ angularMeteorObject.factory('AngularMeteorObject', ['$q', '$meteorSubscribe', fu
     'collection', '_eventEmitter'
   ];
 
-  var createAngularMeteorObject = function(collection, id, options){
+  var createAngularMeteorObject = function(collection, id, options, auto){
     // Make data not be an object so we can extend it to preserve
     // Collection Helpers and the like
     var data = new function SubObject() {};
-    angular.extend(data, collection.findOne(id, options));
 
+    /*
     data.$$collection = collection;
     data.$$options = options;
     data.$$id = id;
+    */
 
-    angular.extend(data, AngularMeteorObject);
+    var selector = id;
+    if (!angular.isObject(id))
+      selector = {_id : id};
 
-    return data;
+    options = options || {};
+    options.limit = 1;
+
+    var collectionData = $meteorCollection(function(){
+      return collection.find(selector, options)
+    }, auto);
+
+    data.$$originalCollection = collectionData;
+    //console.log('data', data);
+    //console.log('collection data before', collectionData[0]);
+    //console.log('AngularMeteorObject', AngularMeteorObject);
+    angular.extend(collectionData[0], data);
+    //console.log('collection data after one', collectionData[0]);
+    angular.extend(collectionData[0], AngularMeteorObject);
+
+    console.log('the end object', collectionData[0]);
+
+    return collectionData[0];
   };
 
   return createAngularMeteorObject;
@@ -108,6 +139,7 @@ angularMeteorObject.factory('AngularMeteorObject', ['$q', '$meteorSubscribe', fu
 angularMeteorObject.factory('$meteorObject', ['$rootScope', '$meteorUtils', 'AngularMeteorObject',
   function($rootScope, $meteorUtils, AngularMeteorObject) {
     return function(collection, id, auto, options) {
+
       // Validate parameters
       if (!collection) {
         throw new TypeError("The first argument of $meteorObject is undefined.");
@@ -118,31 +150,7 @@ angularMeteorObject.factory('$meteorObject', ['$rootScope', '$meteorUtils', 'Ang
 
       auto = auto !== false; // Making auto default true - http://stackoverflow.com/a/15464208/1426570
 
-      var data = new AngularMeteorObject(collection, id, options);
-
-      data.autorunComputation = $meteorUtils.autorun($rootScope, function() {
-        data.reset();
-      });
-
-      if (auto) { // Deep watches the model and performs autobind.
-        data.unregisterAutoBind = $rootScope.$watch(function(){
-          return _.omit(data, data.$$internalProps);
-        }, function (newItem, oldItem) {
-          if (newItem !== oldItem && newItem) {
-            var newItemId = newItem._id;
-            if (newItemId && !_.isEmpty(newItem = _.omit(angular.copy(newItem), '_id'))) {
-              collection.update({_id: newItemId}, {$set: newItem});
-            }
-          }
-        }, true);
-      }
-
-      data.unregisterAutoDestroy = $rootScope.$on('$destroy', function() {
-        if (data && data.stop) {
-          data.stop();
-        }
-        data = undefined;
-      });
+      var data = new AngularMeteorObject(collection, id, options, auto);
 
       return data;
     };
