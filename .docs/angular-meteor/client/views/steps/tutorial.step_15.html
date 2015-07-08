@@ -38,15 +38,15 @@ In `parties-list.ng.html` add a ng-show directive to the form like that:
 
 Note that `$root.currentUser` is the $rootScope variable that we use that is bound to the current logged-in user.
 
-If it is undefined, this means that there is no logged-in user.  So only if '$root.currentUser' exists will the form will be shown.
+If it is undefined, this means that there is no logged-in user.  So only if '$root.currentUser' exists will the form be shown.
 
 Then right after the form, add this HTML:
 
     <div ng-hide="$root.currentUser || $root.loggingIn">
-      Log in to create a party!
+      Sign in to create a party!
     </div>
 
-That is exactly the opposite - if `$root.currentUser` exists or we're in the processing of logging in, hide that div. Note that this statement is equivalent to `ng-show="!$root.currentUser && !$root.loggingIn"`.
+That is exactly the opposite - if `$root.currentUser` exists or we're in the process of logging in, hide that div. Note that this statement is equivalent to `ng-show="!$root.currentUser && !$root.loggingIn"`.
 
 Now add the same to the RSVP buttons:
 
@@ -56,7 +56,7 @@ Now add the same to the RSVP buttons:
       <input type="button" value="No" ng-click="rsvp(party._id, 'no')">
     </div>
 
-Add let's add this the the end of the RSVP buttons:
+And let's add this the the end of the RSVP buttons:
 
     <div ng-hide="$root.currentUser">
       <i>Sign in to RSVP for this party.</i>
@@ -90,7 +90,7 @@ So let's use `ng-if` to hide the outstanding invitations from a party, if the pa
 
 # Assigning a function
 
-Now lets hide the 'Users to invite' inside `party-details.ng.html` is case the user is not logged in or can't invite to the party:
+Now lets hide the 'Users to invite' inside `party-details.ng.html` in case the user is not logged in or can't invite to the party:
 
 To do that we will create a scope function that returns a boolean and associate it with `ng-show`:
 
